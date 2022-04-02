@@ -16,12 +16,25 @@
 import sys
 
 def criterioOrdenamiento(setDeDatos):
-  return (int(setDeDatos[2]) - int(setDeDatos[1]))
+    return (int(setDeDatos[2]) - int(setDeDatos[1]))
 
 def quitarSolapadas(setDeDatos):
-  for i in range(0,len(setDeDatos)-1):
-      print(i)
+    inicioPrimeroLista = int(setDeDatos[0][1]) - int(setDeDatos[0][2])
+    finalPrimeroLista  = int(setDeDatos[0][1]) + int(setDeDatos[0][2])
+    numerosAEliminar = []
+    for i in range(1,len(setDeDatos)):
+        inicioEvaluadoActual = int(setDeDatos[i][1]) - int(setDeDatos[i][2])
+        finalEvaluadoActual  = int(setDeDatos[i][1]) + int(setDeDatos[i][2]) 
+        if ((inicioPrimeroLista <= inicioEvaluadoActual) & (finalPrimeroLista >= finalEvaluadoActual)):
+          numerosAEliminar.append(i)
 
+    numerosAEliminar.sort(reverse=True)
+    
+    for i in range(0,len(numerosAEliminar)):
+        setDeDatos.pop(numerosAEliminar[i])
+    
+    return setDeDatos
+    
 def intervalSchedulingAdaptado(file):
     setDeDatos = []
     conjuntoFinal = []
@@ -29,13 +42,15 @@ def intervalSchedulingAdaptado(file):
     with open(file) as archivo:
         for linea in archivo:
             setDeDatos.append(linea.split()[0].split(','))            
-
+   
     setDeDatos.sort(reverse=True, key=criterioOrdenamiento)
-
-    while len(setDeDatos) != 0:
-        conjuntoFinal.append(setDeDatos[0])
-        setDeDatos = quitarSolapadas(setDeDatos)
     
+    print(setDeDatos)
+    
+    conjuntoFinal.append(setDeDatos[0])
+    setDeDatos = quitarSolapadas(setDeDatos)
+
+    print(setDeDatos)
 
 intervalSchedulingAdaptado("contratos.txt")
 
