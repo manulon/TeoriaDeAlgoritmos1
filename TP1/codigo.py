@@ -50,7 +50,7 @@ def intervalSchedulingAdaptado(file, k):
         kmCubiertos += (finalUltimoLista - kmCubiertos)
 
     if kmCubiertos < int(k):
-        print('No es posible cubrir toda la ruta con las propuestas existentes, solamente se pudieron cubrir ', kmCubiertos,' kilometros.')
+        print('No es posible cubrir toda la ruta, solamente se pudieron cubrir ', kmCubiertos,' kilometros.')
         return -1
     else:
         print('Se puede cubrir la ruta completa. Las propuestas seleccionadas son:', end=" ")
