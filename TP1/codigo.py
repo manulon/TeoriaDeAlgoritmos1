@@ -43,7 +43,6 @@ def intervalSchedulingAdaptado(file, k):
     setDeDatos = []
     conjuntoFinal = []
     kmCubiertos = 0
-    error = 0
 
     with open(file) as archivo:
         for linea in archivo:
@@ -51,7 +50,7 @@ def intervalSchedulingAdaptado(file, k):
    
     setDeDatos.sort(reverse=True, key=criterioOrdenamiento)
         
-    while ( (len(setDeDatos) != 0) and (kmCubiertos != int(k)) and (error != -1) ) :
+    while ( (len(setDeDatos) != 0) and (kmCubiertos != int(k)) ) :
         conjuntoFinal.append(setDeDatos[0])
         setDeDatos = quitarSolapadas(setDeDatos)
         setDeDatos.pop(0)
