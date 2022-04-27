@@ -1,0 +1,4 @@
+Para correr el programa lo primero que debe hacerse es posicionarse en la terminal en la ruta donde se encuentran los archivos
+Luego correr el siguiente comando 'python3 codigo.py ARCHIVO NUMERO-NODOS' siendo ARCHIVO el archivo txt donde se encuentren
+los nodos (en la entrega se proporciono un archivo llamado nodos.txt que cumple con lo necesario) y NODOS haciendo referencia
+a la cantidad de nodos que hay en el grafo que se entrega en el archivo.
