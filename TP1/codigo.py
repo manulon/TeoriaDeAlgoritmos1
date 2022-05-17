@@ -1,30 +1,34 @@
 import sys
 
-def criterioOrdenamiento(setDeDatos):
-    return (int(setDeDatos[2]) - int(setDeDatos[1]))
 
-def quitarSolapadas(setDeDatos):
-    inicioPrimeroLista = int(setDeDatos[0][1]) - int(setDeDatos[0][2])
-    if inicioPrimeroLista < 0:
-        inicioPrimeroLista = 0
-    finalPrimeroLista  = int(setDeDatos[0][1]) + int(setDeDatos[0][2])
-    numerosAEliminar = []
-    for i in range(1,len(setDeDatos)):
-        inicioEvaluadoActual = int(setDeDatos[i][1]) - int(setDeDatos[i][2])
-        if inicioEvaluadoActual < 0:
-            inicioEvaluadoActual = 0
-        finalEvaluadoActual  = int(setDeDatos[i][1]) + int(setDeDatos[i][2]) 
-        if ((inicioPrimeroLista <= inicioEvaluadoActual) & (finalPrimeroLista >= finalEvaluadoActual)):
-          numerosAEliminar.append(i)
 
-    numerosAEliminar.sort(reverse=True)
+def buscarAntenaQueCubraEspacioDisponible(setDeDatos, conjuntoFinal, kmCubiertos):
+    candidatoFinal = []
+    seEncontroCandidato = False
+    nuevosKmCubiertos = 0
+
+    for i in range(0, len(setDeDatos)):
+        comienzoCoberturaCandidato  = int(setDeDatos[i][1]) - int(setDeDatos[i][2])
+        finalCoberturaCandidato     = int(setDeDatos[i][1]) + int(setDeDatos[i][2])
+        
+        if ((comienzoCoberturaCandidato <= kmCubiertos and finalCoberturaCandidato > kmCubiertos)):
+            if (len(candidatoFinal) != 0):
+                finalCoberturaCandidatoFinal = int(candidatoFinal[1]) + int(candidatoFinal[2])
+                if (finalCoberturaCandidato >= finalCoberturaCandidatoFinal):
+                    candidatoFinal = setDeDatos[i]
+                    seEncontroCandidato = True
+            else:
+                candidatoFinal = setDeDatos[i]
+                seEncontroCandidato = True
     
-    for i in range(0,len(numerosAEliminar)):
-        setDeDatos.pop(numerosAEliminar[i])
-    
-    return setDeDatos
-    
-def intervalSchedulingAdaptado(file, k):    
+    if seEncontroCandidato:
+        conjuntoFinal.append(candidatoFinal)
+        nuevosKmCubiertos = int(candidatoFinal[1]) + int(candidatoFinal[2])
+
+    return conjuntoFinal, seEncontroCandidato, nuevosKmCubiertos
+        
+        
+def cobertura(file, k):    
     setDeDatos = []
     conjuntoFinal = []
     kmCubiertos = 0
@@ -32,32 +36,22 @@ def intervalSchedulingAdaptado(file, k):
     with open(file) as archivo:
         for linea in archivo:
             setDeDatos.append(linea.split()[0].split(','))            
-   
-    setDeDatos.sort(reverse=True, key=criterioOrdenamiento)
         
-    while ( (len(setDeDatos) != 0) and (kmCubiertos != int(k)) ) :
-        conjuntoFinal.append(setDeDatos[0])
-        setDeDatos = quitarSolapadas(setDeDatos)
-        setDeDatos.pop(0)
-
-        inicioUltimoLista = int(conjuntoFinal[-1][1]) - int(conjuntoFinal[-1][2])
-        finalUltimoLista  = int(conjuntoFinal[-1][1]) + int(conjuntoFinal[-1][2])
-        if finalUltimoLista > int(k):
-            finalUltimoLista = int(k)
-        if inicioUltimoLista > kmCubiertos:
-            print('No es posible cubrir toda la ruta con las propuestas existentes ')
+    while (kmCubiertos < int(k)) :
+        conjuntoFinal, seEncontroCandidato, nuevosKmCubiertos = buscarAntenaQueCubraEspacioDisponible \
+                                                                (setDeDatos, conjuntoFinal, kmCubiertos)
+        if seEncontroCandidato:
+            kmCubiertos = nuevosKmCubiertos 
+        else:
+            print('No es posible cubrir toda la ruta, solamente se pudieron cubrir', kmCubiertos, \
+                  'kilometros.')       
             return -1
-        kmCubiertos += (finalUltimoLista - kmCubiertos)
 
-    if kmCubiertos < int(k):
-        print('No es posible cubrir toda la ruta, solamente se pudieron cubrir ', kmCubiertos,' kilometros.')
-        return -1
-    else:
-        print('Se puede cubrir la ruta completa. Las propuestas seleccionadas son:', end=" ")
-        for i in range(0,len(conjuntoFinal)):
-            print(conjuntoFinal[i][0], end=" ")
-        print('\nSe cubriran ', kmCubiertos, ' kilometros.')
-        return 0
+    print('Se puede cubrir la ruta completa. Las propuestas seleccionadas son:', end=" ")
+    for i in range(0,len(conjuntoFinal)):
+        print(conjuntoFinal[i][0], end=" ")
+    print('\nSe cubriran', k, 'kilometros.')
+    
+    return 0
        
-intervalSchedulingAdaptado("contratos.txt", sys.argv[1])
-
+cobertura("contratos.txt", sys.argv[1])
