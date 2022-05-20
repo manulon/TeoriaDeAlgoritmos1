@@ -2,8 +2,27 @@ INFINITO = float('inf')
 import sys
 
 def main():
-    resultado = encontrar_ciclo_negativo(sys.argv[1], int(sys.argv[2]))
+    resultado = encontrar_ciclo_negativo(sys.argv[1])
     print(resultado)
+
+#   ESTO SE PUEDE PONER TODO EN LA FUNCION DE LOS CICLOS NEGATIVOS PERO LO DEJO ASI POR AHORA
+def obtenerCantidadDeNodos(filename):
+    n = 0
+    nodos = []
+
+    f = open(filename, 'r')
+    lines = f.readlines()
+
+    for l in lines:
+        data = l.split()[0].split(',')
+        if len(data) != 1:
+            if data[0] not in nodos:
+                nodos.append(data[0])
+                n+=1
+            if data[1] not in nodos:
+                nodos.append(data[1])
+                n+=1
+    return n
 
 def parsearGrafo(tramos):
     grafo = {}
@@ -23,7 +42,8 @@ def parsearGrafo(tramos):
                 recorridos[data[1]] = ''
     return grafo, nodos, recorridos
 
-def encontrar_ciclo_negativo(fileName, n):
+def encontrar_ciclo_negativo(fileName):
+    n = obtenerCantidadDeNodos(fileName)
     l, v = (n, n)
     OPT = [[0 for i in range(l)] for j in range(v + 1)] 
     for l in range(n + 1):
